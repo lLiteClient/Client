@@ -1,0 +1,7 @@
+{
+  "version": "0.1.0",
+  "name": "LiteClient Release 0.1.0",
+  "download_url": "https://lliteclient.github.io/LiteClient.exe",
+  "changelog": "100% Critical Hits fix + Telegram Auth + Server Presets (FunTime, HolyWorld, ReallyWorld)",
+  "min_version": "0.1.0"
+}

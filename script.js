@@ -431,12 +431,37 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // FAQ Modal Elements
+  const faqModal = document.getElementById('faqModal');
+  const openFaqBtn = document.getElementById('openFaqBtn');
+  const footerFaqBtn = document.getElementById('footerFaqBtn');
+  const closeFaqBtn = document.getElementById('closeFaqBtn');
+
+  function openFaq() {
+    if (faqModal) {
+      faqModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+  }
+
+  function closeFaq() {
+    if (faqModal) {
+      faqModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+  }
+
+  if (openFaqBtn) openFaqBtn.addEventListener('click', openFaq);
+  if (footerFaqBtn) footerFaqBtn.addEventListener('click', openFaq);
+  if (closeFaqBtn) closeFaqBtn.addEventListener('click', closeFaq);
+
   // Close modals on backdrop click
   window.addEventListener('click', (e) => {
     if (e.target === tariffsModal) closeTariffs();
     if (e.target === legalModal) closeLegal();
     if (e.target === authModal) closeAuthModal();
     if (e.target === profileModal) closeProfileModal();
+    if (e.target === faqModal) closeFaq();
   });
 
   // Close on Escape
@@ -446,6 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (legalModal.classList.contains('active')) closeLegal();
       if (authModal.classList.contains('active')) closeAuthModal();
       if (profileModal.classList.contains('active')) closeProfileModal();
+      if (faqModal && faqModal.classList.contains('active')) closeFaq();
     }
   });
 

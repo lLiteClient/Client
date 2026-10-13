@@ -16,7 +16,7 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="logo.svg?v=5">
-  <link rel="stylesheet" href="styles.css?v=11">
+  <link rel="stylesheet" href="styles.css?v=12">
 </head>
 <body>
   <!-- Ambient background lighting & animated canvas -->
@@ -24,7 +24,7 @@
   <div class="ambient-glow glow-2"></div>
   <canvas id="particleCanvas"></canvas>
 
-  <!-- Top bar with Logo, Auth and Tariffs buttons -->
+  <!-- Top bar with Logo, Auth, FAQ and Tariffs buttons -->
   <header class="top-nav">
     <div class="nav-wrapper">
       <div class="top-logo">
@@ -45,6 +45,15 @@
         <button class="user-profile-badge" id="userProfileBtn" style="display: none;">
           <span class="badge-dot"></span>
           <span class="badge-user" id="navUsername">@username</span>
+        </button>
+
+        <button class="nav-btn faq-nav-btn" id="openFaqBtn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+          </svg>
+          <span>FAQ</span>
         </button>
 
         <button class="nav-btn tariffs-open-btn" id="openTariffsBtn">
@@ -82,11 +91,19 @@
         <button class="hero-primary-btn" id="heroOpenTariffsBtn">
           Выбрать тариф
         </button>
+        <a href="LiteClient.exe" download="LiteClient.exe" class="hero-download-btn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          <span>Скачать (.exe)</span>
+        </a>
         <a href="https://t.me/lLiteClientBot" target="_blank" rel="noopener noreferrer" class="hero-secondary-btn">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
             <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .39z"/>
           </svg>
-          Техподдержка
+          <span>Техподдержка</span>
         </a>
       </div>
     </div>
@@ -99,6 +116,8 @@
         © 2026 LiteClient. Все права защищены. Электронные ключи доступа.
       </div>
       <div class="footer-links">
+        <button class="footer-link-btn" id="footerFaqBtn">FAQ</button>
+        <span class="footer-sep">•</span>
         <button class="footer-link-btn" data-legal="terms">Оферта</button>
         <span class="footer-sep">•</span>
         <button class="footer-link-btn" data-legal="privacy">Политика конфиденциальности</button>
@@ -258,6 +277,22 @@
           </div>
         </div>
 
+        <!-- Download Client Box inside Dashboard -->
+        <div class="profile-download-box">
+          <div class="dl-info">
+            <div class="dl-title">Автономный лаунчер LiteClient</div>
+            <div class="dl-ver">Версия v0.1.0 • Windows 10/11 • Fabric 1.21.4</div>
+          </div>
+          <a href="LiteClient.exe" download="LiteClient.exe" class="profile-dl-action-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Скачать (.exe)</span>
+          </a>
+        </div>
+
         <div class="profile-stats-grid">
           <div class="stat-card">
             <div class="stat-name">Привязанный Telegram</div>
@@ -276,6 +311,63 @@
           <button class="logout-btn" id="logoutBtn">
             Выйти
           </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FAQ Modal -->
+  <div class="modal-backdrop" id="faqModal">
+    <div class="modal-card faq-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <img src="logo.svg?v=5" alt="LiteClient" class="modal-logo-img">
+          <h2 class="modal-title">Частые вопросы (FAQ)</h2>
+        </div>
+        <button class="modal-close-btn" id="closeFaqBtn" aria-label="Закрыть">&times;</button>
+      </div>
+
+      <div class="faq-content-body">
+        <div class="faq-item">
+          <div class="faq-question">1. Как запустить LiteClient?</div>
+          <div class="faq-answer">
+            Скачайте файл <code>LiteClient.exe</code>, запустите его на Windows 10/11. Лаунчер автоматически определит установленный Minecraft и Java, активирует зашифрованную модификацию и запустит клиент в 1 клик.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">2. Нужен ли сторонний лаунчер?</div>
+          <div class="faq-answer">
+            Нет, LiteClient работает полностью автономно. Он поддерживает автоматический запуск как через собственный лаунчер, так и интеграцию с ElyPrismLauncher, PrismLauncher, TLauncher и официальным лаунчером.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">3. Как активировать лицензионный ключ?</div>
+          <div class="faq-answer">
+            После приобретения тарифа ключ вида <code>LITE-XXXX-XXXX-XXXX-XXXX</code> вводится в окно лаунчера, либо подтягивается автоматически при входе через Telegram-бота.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">4. На каких версиях работает клиент?</div>
+          <div class="faq-answer">
+            Клиент разработан для актуальной версии <b>Minecraft 1.21.4</b> на базе Fabric Loader с полной поддержкой современных оптимизаций графики (G1GC, 144+ FPS).
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">5. Безопасен ли лаунчер для системы?</div>
+          <div class="faq-answer">
+            LiteClient не содержит сторонних инжекторов, драйверов режима ядра или рекламы. Все внутренние ресурсы мода зашифрованы алгоритмом AES-256 и запускаются изолированно.
+          </div>
+        </div>
+
+        <div class="faq-item">
+          <div class="faq-question">6. Что делать, если не запускается или возникла ошибка?</div>
+          <div class="faq-answer">
+            Обратитесь в нашу круглосуточную службу поддержки в Telegram: <a href="https://t.me/lLiteClientBot" target="_blank" class="contact-card-link">@lLiteClientBot</a>. Мы поможем решить любую проблему в течение пары минут.
+          </div>
         </div>
       </div>
     </div>
@@ -305,6 +397,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=8"></script>
+  <script src="script.js?v=9"></script>
 </body>
 </html>
