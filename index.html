@@ -3,304 +3,53 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LiteClient 1.21.4 — Премиальный чит-клиент для FunTime и SkyTime</title>
-  <meta name="description" content="LiteClient 1.21.4: обход GrimAC 2.3.68, чистые криты, KillAura с WindMouse, 50+ модулей и нативный лаунчер без лагов.">
+  <title>LiteClient — Minecraft 1.21.4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
-  <!-- Ambient background lighting -->
+  <!-- Ambient background lighting & animated canvas -->
   <div class="ambient-glow glow-1"></div>
   <div class="ambient-glow glow-2"></div>
   <canvas id="particleCanvas"></canvas>
 
-  <!-- Navigation -->
-  <header class="navbar">
-    <div class="nav-container">
-      <a href="#" class="brand">
-        <span class="brand-icon">⚡</span>
-        <span class="brand-name">Lite<span class="brand-accent">Client</span></span>
-        <span class="badge-version">v1.0 • 1.21.4</span>
-      </a>
-      <div class="nav-actions">
-        <a href="#download" class="btn btn-primary">Скачать</a>
+  <!-- Centered minimalist landing -->
+  <main class="center-wrapper">
+    <div class="center-card">
+      <div class="version-tag">
+        <span class="pulse-dot"></span>
+        MINECRAFT 1.21.4 • FABRIC
       </div>
-    </div>
-  </header>
 
-  <!-- Hero Section -->
-  <section class="hero">
-    <div class="container hero-content">
-      <div class="hero-badge">
-        <span class="dot"></span> 100% Обход GrimAC 2.3.68 & SkyTime • 0 Флагов
-      </div>
-      <h1 class="hero-title">
-        Доминируй на Анархии <br>
-        <span class="gradient-text">нового поколения</span>
+      <h1 class="logo-title">
+        <span class="icon">⚡</span> Lite<span class="highlight">Client</span>
       </h1>
-      <p class="hero-subtitle">
-        LiteClient — инновационный Minecraft 1.21.4 клиент со встроенным портативным Java 21 лаунчером,
-        человеческой физикой мыши <strong>WindMouse</strong>, чистыми критами и защищённым AES-256 хранилищем.
+
+      <p class="tagline">
+        Приватный оптимизированный клиент нового поколения
       </p>
-      <div class="hero-buttons">
-        <a href="#download" class="btn btn-hero">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-          Скачать LiteClient.exe
-        </a>
-        <a href="#modules" class="btn btn-secondary">
-          Список модулей (50+)
-        </a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-card">
-          <span class="stat-value">1.21.4</span>
-          <span class="stat-label">Версия игры</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">0.00ms</span>
-          <span class="stat-label">Десинк инпута</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">50+</span>
-          <span class="stat-label">Модулей в ClickGUI</span>
-        </div>
-        <div class="stat-card">
-          <span class="stat-value">AES-256</span>
-          <span class="stat-label">Защита мода</span>
-        </div>
+
+      <a href="LiteClient.exe" download="LiteClient.exe" class="download-button" id="downloadBtn">
+        <svg class="dl-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Скачать LiteClient.exe</span>
+      </a>
+
+      <div class="info-footer">
+        <span>Windows 10 / 11</span>
+        <span class="dot">•</span>
+        <span>Portable Java 21</span>
+        <span class="dot">•</span>
+        <span>AES-256</span>
       </div>
     </div>
-  </section>
+  </main>
 
-  <!-- Features Highlights -->
-  <section id="features" class="section">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">ПОЧЕМУ МЫ</span>
-        <h2 class="section-title">Создан для побед, проверен на практике</h2>
-        <p class="section-desc">Каждый модуль оптимизирован под античиты FunTime, SkyTime, SpookyTime и ReallyWorld.</p>
-      </div>
-
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🎯</div>
-          <h3>KillAura с WindMouse</h3>
-          <p>Физическое моделирование руки через гравитацию и турбулентность ветра (BenLand100). Никаких резких робот-снапов — модераторы видят естественное движение мыши.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">⚡</div>
-          <h3>Legit & Silent Sprint Reset</h3>
-          <p>Идеальная синхронизация с PlayerInputC2SPacket в 1.21.4. Никаких флагов BadPackets или Simulation. 100% проходящие криты на каждом ударе.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🛡️</div>
-          <h3>Умный AutoTotem & AutoSwap</h3>
-          <p>Свап тотемов из любых слотов при падении здоровья или опасности от кристаллов, умное сохранение ценных сфер и талисманов.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🏷️</div>
-          <h3>Чистые NameTags без багов</h3>
-          <p>Полное вырезание старых ванильных никнеймов и отрисовка современных плашек с полоской здоровья, броней, пингом и дистанцией.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🎨</div>
-          <h3>Liquid Glass ClickGUI</h3>
-          <p>Матовое стекло, неоновые акценты, плавная анимация, 30+ пресетов тем, визуальные HUD-виджеты и drag-and-drop кастомизация.</p>
-        </div>
-
-        <div class="feature-card">
-          <div class="feature-icon">🔒</div>
-          <h3>Встроенный HWID Vault</h3>
-          <p>Нативный C# лаунчер со встроенной распаковкой портативной Java 21, синхронизацией конфигов и защитой по криптографическому ключу.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Modules Showcase -->
-  <section id="modules" class="section section-dark">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">АРСЕНАЛ</span>
-        <h2 class="section-title">Все категории модулей</h2>
-        <p class="section-desc">Выберите категорию, чтобы посмотреть доступные функции клиента.</p>
-      </div>
-
-      <div class="module-tabs">
-        <button class="tab-btn active" data-tab="combat">Combat (Бой)</button>
-        <button class="tab-btn" data-tab="mobility">Mobility (Движение)</button>
-        <button class="tab-btn" data-tab="visual">Visual (Визуалы)</button>
-        <button class="tab-btn" data-tab="subject">Subject (Предметы)</button>
-        <button class="tab-btn" data-tab="other">Other (Разное)</button>
-      </div>
-
-      <div class="tab-content active" id="tab-combat">
-        <div class="modules-grid">
-          <div class="mod-pill"><span class="mod-name">KillAura</span><span class="mod-desc">Авто-атака с байпассами, WindMouse и критами</span></div>
-          <div class="mod-pill"><span class="mod-name">TriggerBot</span><span class="mod-desc">Удар при наведении прицела с авто-спринт ресетом</span></div>
-          <div class="mod-pill"><span class="mod-name">AimBot</span><span class="mod-desc">Плавная доводка прицела на цель</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoClicker</span><span class="mod-desc">Настраиваемые клики в секунду (APS)</span></div>
-          <div class="mod-pill"><span class="mod-name">CrystalAura</span><span class="mod-desc">Быстрый подрыв эндер-кристаллов</span></div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="tab-mobility">
-        <div class="modules-grid">
-          <div class="mod-pill"><span class="mod-name">AutoSprint</span><span class="mod-desc">Легитный авто-спринт с уступкой перед критами</span></div>
-          <div class="mod-pill"><span class="mod-name">Speed</span><span class="mod-desc">Ускорение движения с LowHop режимом</span></div>
-          <div class="mod-pill"><span class="mod-name">Flight</span><span class="mod-desc">Полёт для креатива и серверов</span></div>
-          <div class="mod-pill"><span class="mod-name">ElytraSpeed</span><span class="mod-desc">Управление скоростью и высотой на элитрах</span></div>
-          <div class="mod-pill"><span class="mod-name">InventoryMove</span><span class="mod-desc">Свободное движение при открытом инвентаре</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoJump</span><span class="mod-desc">Автоматические прыжки при зажатом пробеле</span></div>
-          <div class="mod-pill"><span class="mod-name">Step</span><span class="mod-desc">Подъём на блоки без прыжков</span></div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="tab-visual">
-        <div class="modules-grid">
-          <div class="mod-pill"><span class="mod-name">NameTags</span><span class="mod-desc">Информативные никнеймы, ХП, броня, пинг и друзья</span></div>
-          <div class="mod-pill"><span class="mod-name">TargetESP</span><span class="mod-desc">3D анимированные кольца и цилиндр вокруг цели</span></div>
-          <div class="mod-pill"><span class="mod-name">NoRender</span><span class="mod-desc">Убирает огонь, тряску камеры, тотемы, тошноту</span></div>
-          <div class="mod-pill"><span class="mod-name">Crosshair</span><span class="mod-desc">Кастомный прицел с индикатором кулдауна 1.9+</span></div>
-          <div class="mod-pill"><span class="mod-name">Freecam</span><span class="mod-desc">Свободная камера сквозь стены без флагов</span></div>
-          <div class="mod-pill"><span class="mod-name">ESP & Box</span><span class="mod-desc">Подсветка игроков и мобов через стены</span></div>
-          <div class="mod-pill"><span class="mod-name">World</span><span class="mod-desc">Смена времени суток, погоды и освещения</span></div>
-          <div class="mod-pill"><span class="mod-name">Tracers</span><span class="mod-desc">Линии трассировки до игроков</span></div>
-          <div class="mod-pill"><span class="mod-name">Effects</span><span class="mod-desc">JumpCircles, шлейфы Trails, ChinaHat</span></div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="tab-subject">
-        <div class="modules-grid">
-          <div class="mod-pill"><span class="mod-name">AutoTotem</span><span class="mod-desc">Умный авто-тотем по ХП, падению и кристаллам</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoGapple</span><span class="mod-desc">Авто-поедание золотых яблок с паузой ауры</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoPotion</span><span class="mod-desc">Беспалевный забафф взрывными зельями под ноги</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoEquipment</span><span class="mod-desc">Авто-экипировка лучшей брони из инвентаря</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoTool</span><span class="mod-desc">Авто-выбор лучшего инструмента и возврат оружия</span></div>
-          <div class="mod-pill"><span class="mod-name">InventoryCleaner</span><span class="mod-desc">Авто-выброс мусора с легитными задержками</span></div>
-          <div class="mod-pill"><span class="mod-name">Velocity</span><span class="mod-desc">Снижение или полное отключение отдачи</span></div>
-        </div>
-      </div>
-
-      <div class="tab-content" id="tab-other">
-        <div class="modules-grid">
-          <div class="mod-pill"><span class="mod-name">AutoSwap</span><span class="mod-desc">Свап Сфера/Талисман/Тотем по бинду</span></div>
-          <div class="mod-pill"><span class="mod-name">ElytraSwap</span><span class="mod-desc">Быстрая смена нагрудника на элитры</span></div>
-          <div class="mod-pill"><span class="mod-name">MiddleClick</span><span class="mod-desc">СКМ: друзья (MCF) и моментальный эндер-пёрл</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoLeave</span><span class="mod-desc">Экстренный лив или /hub при опасности/враге</span></div>
-          <div class="mod-pill"><span class="mod-name">AntiAFK</span><span class="mod-desc">Имитация живого игрока для защиты от кика</span></div>
-          <div class="mod-pill"><span class="mod-name">AutoFish</span><span class="mod-desc">Авто-рыбалка с авто-перезабросом удочки</span></div>
-          <div class="mod-pill"><span class="mod-name">ChatSpammer</span><span class="mod-desc">Авто-отправка сообщений с обходом анти-спама</span></div>
-          <div class="mod-pill"><span class="mod-name">FakePlayer</span><span class="mod-desc">Тестовый манекен для проверки KillAura</span></div>
-          <div class="mod-pill"><span class="mod-name">NameProtect</span><span class="mod-desc">Скрытие вашего ника во всех меню и чате</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Download & License -->
-  <section id="download" class="section">
-    <div class="container">
-      <div class="download-card">
-        <div class="download-info">
-          <span class="section-tag">ГОТОВ К БОЮ</span>
-          <h2>Скачать LiteClient для Windows</h2>
-          <p>Всего один файл — лаунчер сам подготовит клиент, библиотеки и запустит игру на чистом 1.21.4.</p>
-          <ul class="download-checklist">
-            <li>✓ Windows 10 / 11 (64-bit)</li>
-            <li>✓ Автономная портативная Java 21 загружается сама</li>
-            <li>✓ Работает с ElyPrismLauncher или в standalone режиме</li>
-            <li>✓ Мгновенная активация ключа в 1 клик</li>
-          </ul>
-          <div class="download-btns">
-            <a href="LiteClient.exe" download="LiteClient.exe" class="btn btn-hero btn-pulse">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              Скачать LiteClient.exe (710 KB)
-            </a>
-          </div>
-        </div>
-        <div class="download-preview">
-          <div class="launcher-mockup">
-            <div class="mockup-header">
-              <span class="mock-dot red"></span>
-              <span class="mock-dot yellow"></span>
-              <span class="mock-dot green"></span>
-              <span class="mock-title">LiteClient Launcher • 1.21.4</span>
-            </div>
-            <div class="mockup-body">
-              <div class="mock-profile">
-                <div class="mock-avatar">⚡</div>
-                <div>
-                  <div class="mock-nick">Player</div>
-                  <div class="mock-role">[ADMIN] АКТИВЕН</div>
-                </div>
-              </div>
-              <div class="mock-progress-bar"><div class="mock-progress-fill"></div></div>
-              <div class="mock-status">Готов к запуску • HWID верифицирован</div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- FAQ -->
-  <section id="faq" class="section section-dark">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">ПОМОЩЬ</span>
-        <h2 class="section-title">Часто задаваемые вопросы</h2>
-      </div>
-
-      <div class="faq-list">
-        <div class="faq-item">
-          <button class="faq-question">Как запустить LiteClient?<span class="arrow">↓</span></button>
-          <div class="faq-answer">
-            <p>1. Скачайте <code>LiteClient.exe</code> на рабочий стол.<br>
-            2. Запустите файл, введите свой ключ лицензии и нажмите «Разблокировать».<br>
-            3. Нажмите большую кнопку «Играть» — лаунчер сам загрузит чистую Java 21 и запустит клиент без лишних настроек.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question">Банит ли античит за Sprint Reset?<span class="arrow">↓</span></button>
-          <div class="faq-answer">
-            <p>Нет! Наш Sprint Reset построен строго по исходному коду ванильного движения 1.21.4 (<code>ClientPlayerEntity.tickMovement</code>) и пакетам <code>PlayerInputC2SPacket</code>. На серверах GrimAC 2.3.68, SkyTime и FunTime ошибки симуляции равны ровно 0.00000.</p>
-          </div>
-        </div>
-        <div class="faq-item">
-          <button class="faq-question">Как открыть меню модов в игре?<span class="arrow">↓</span></button>
-          <div class="faq-answer">
-            <p>По умолчанию меню ClickGUI открывается на правый Shift (<strong>Right Shift</strong>). Все бинды можно переназначить прямо в меню настроек.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="container footer-content">
-      <div class="footer-left">
-        <div class="brand">
-          <span class="brand-icon">⚡</span>
-          <span class="brand-name">Lite<span class="brand-accent">Client</span></span>
-        </div>
-        <p class="footer-copy">© 2026 LiteClient Team. Все права защищены. Minecraft 1.21.4.</p>
-      </div>
-      <div class="footer-links">
-        <a href="#features">Возможности</a>
-        <a href="#modules">Модули</a>
-        <a href="#download">Скачать</a>
-      </div>
-    </div>
-  </footer>
-
-  <script src="script.js"></script>
+  <script src="script.js?v=3"></script>
 </body>
 </html>
