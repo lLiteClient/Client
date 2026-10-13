@@ -3,19 +3,19 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LiteClient — Minecraft 1.21.4</title>
+  <title>LiteClient — Модификация и Лаунчер Minecraft 1.21.4</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
   <meta http-equiv="Pragma" content="no-cache" />
   <meta http-equiv="Expires" content="0" />
   <meta name="enot" content="80ca4e56" />
-  <link rel="icon" type="image/svg+xml" href="logo.svg?v=4">
+  <link rel="icon" type="image/svg+xml" href="logo.svg?v=5">
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="shortcut icon" href="favicon.ico">
-  <link rel="apple-touch-icon" href="logo.svg?v=4">
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="apple-touch-icon" href="logo.svg?v=5">
+  <link rel="stylesheet" href="styles.css?v=9">
 </head>
 <body>
   <!-- Ambient background lighting & animated canvas -->
@@ -27,20 +27,22 @@
   <header class="top-nav">
     <div class="nav-wrapper">
       <div class="top-logo">
-        <img src="logo.svg?v=3" alt="LiteClient" class="nav-logo-img">
+        <img src="logo.svg?v=5" alt="LiteClient" class="nav-logo-img">
         <span class="nav-logo-text">Lite<span class="highlight">Client</span></span>
       </div>
-      <button class="tariffs-open-btn" id="openTariffsBtn">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
-          <line x1="2" y1="10" x2="22" y2="10"></line>
-        </svg>
-        <span>Тарифы</span>
-      </button>
+      <div class="nav-actions">
+        <button class="tariffs-open-btn" id="openTariffsBtn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+            <line x1="2" y1="10" x2="22" y2="10"></line>
+          </svg>
+          <span>Тарифы</span>
+        </button>
+      </div>
     </div>
   </header>
 
-  <!-- Strictly centered title with emblem -->
+  <!-- Strictly centered title with emblem & white description -->
   <main class="center-wrapper">
     <div class="center-card">
       <div class="version-tag">
@@ -49,21 +51,55 @@
       </div>
 
       <div class="logo-emblem-wrap">
-        <img src="logo.svg?v=4" alt="LiteClient Logo" class="brand-logo-img">
+        <img src="logo.svg?v=5" alt="LiteClient Logo" class="brand-logo-img">
       </div>
 
       <h1 class="logo-title">
         Lite<span class="highlight">Client</span>
       </h1>
+
+      <p class="brand-description">
+        Автономный лаунчер и модификация для оптимизации производительности, плавной визуализации и кастомизации интерфейса Minecraft 1.21.4
+      </p>
+
+      <div class="hero-actions">
+        <button class="hero-primary-btn" id="heroOpenTariffsBtn">
+          Выбрать тариф
+        </button>
+        <a href="https://t.me/lLiteClientBot" target="_blank" rel="noopener noreferrer" class="hero-secondary-btn">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .39z"/>
+          </svg>
+          Техподдержка
+        </a>
+      </div>
     </div>
   </main>
+
+  <!-- Legal Footer -->
+  <footer class="site-footer">
+    <div class="footer-wrapper">
+      <div class="footer-copy">
+        © 2026 LiteClient. Все права защищены. Электронные ключи доступа.
+      </div>
+      <div class="footer-links">
+        <button class="footer-link-btn" data-legal="terms">Оферта</button>
+        <span class="footer-sep">•</span>
+        <button class="footer-link-btn" data-legal="privacy">Политика конфиденциальности</button>
+        <span class="footer-sep">•</span>
+        <button class="footer-link-btn" data-legal="refund">Условия возврата и доставки</button>
+        <span class="footer-sep">•</span>
+        <button class="footer-link-btn" data-legal="contacts">Контакты</button>
+      </div>
+    </div>
+  </footer>
 
   <!-- Tariffs Modal -->
   <div class="modal-backdrop" id="tariffsModal">
     <div class="modal-card">
       <div class="modal-header">
         <div class="modal-title-wrap">
-          <img src="logo.svg?v=3" alt="LiteClient" class="modal-logo-img">
+          <img src="logo.svg?v=5" alt="LiteClient" class="modal-logo-img">
           <h2 class="modal-title">Тарифы LiteClient</h2>
         </div>
         <button class="modal-close-btn" id="closeTariffsBtn" aria-label="Закрыть">&times;</button>
@@ -110,6 +146,30 @@
     </div>
   </div>
 
-  <script src="script.js?v=4"></script>
+  <!-- Legal Modal (Terms, Privacy, Refund, Contacts) -->
+  <div class="modal-backdrop" id="legalModal">
+    <div class="modal-card legal-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <img src="logo.svg?v=5" alt="LiteClient" class="modal-logo-img">
+          <h2 class="modal-title" id="legalModalTitle">Информация</h2>
+        </div>
+        <button class="modal-close-btn" id="closeLegalBtn" aria-label="Закрыть">&times;</button>
+      </div>
+
+      <div class="legal-tabs">
+        <button class="legal-tab-btn" data-tab="terms">Оферта</button>
+        <button class="legal-tab-btn" data-tab="privacy">Конфиденциальность</button>
+        <button class="legal-tab-btn" data-tab="refund">Возврат и доставка</button>
+        <button class="legal-tab-btn" data-tab="contacts">Контакты</button>
+      </div>
+
+      <div class="legal-content-body" id="legalContentBody">
+        <!-- Content injected dynamically via script.js -->
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=5"></script>
 </body>
 </html>
