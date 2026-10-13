@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@500;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=3">
+  <link rel="stylesheet" href="styles.css?v=4">
 </head>
 <body>
   <!-- Ambient background lighting & animated canvas -->
@@ -15,7 +15,20 @@
   <div class="ambient-glow glow-2"></div>
   <canvas id="particleCanvas"></canvas>
 
-  <!-- Centered minimalist landing -->
+  <!-- Top bar with Tariffs button -->
+  <header class="top-nav">
+    <div class="nav-wrapper">
+      <button class="tariffs-open-btn" id="openTariffsBtn">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+          <line x1="2" y1="10" x2="22" y2="10"></line>
+        </svg>
+        <span>Тарифы</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- Strictly centered title -->
   <main class="center-wrapper">
     <div class="center-card">
       <div class="version-tag">
@@ -26,30 +39,61 @@
       <h1 class="logo-title">
         <span class="icon">⚡</span> Lite<span class="highlight">Client</span>
       </h1>
-
-      <p class="tagline">
-        Приватный оптимизированный клиент нового поколения
-      </p>
-
-      <a href="LiteClient.exe" download="LiteClient.exe" class="download-button" id="downloadBtn">
-        <svg class="dl-icon" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-          <polyline points="7 10 12 15 17 10"></polyline>
-          <line x1="12" y1="15" x2="12" y2="3"></line>
-        </svg>
-        <span>Скачать LiteClient.exe</span>
-      </a>
-
-      <div class="info-footer">
-        <span>Windows 10 / 11</span>
-        <span class="dot">•</span>
-        <span>Portable Java 21</span>
-        <span class="dot">•</span>
-        <span>AES-256</span>
-      </div>
     </div>
   </main>
 
-  <script src="script.js?v=3"></script>
+  <!-- Tariffs Modal -->
+  <div class="modal-backdrop" id="tariffsModal">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <span class="modal-icon">⚡</span>
+          <h2 class="modal-title">Тарифы LiteClient</h2>
+        </div>
+        <button class="modal-close-btn" id="closeTariffsBtn" aria-label="Закрыть">&times;</button>
+      </div>
+
+      <div class="tariffs-grid">
+        <!-- 1 День -->
+        <div class="tariff-box">
+          <div class="tariff-duration">1 День</div>
+          <div class="tariff-price">49 <span class="currency">руб</span></div>
+          <button class="buy-btn" data-plan="1 День" data-price="49 руб">Купить</button>
+        </div>
+
+        <!-- 7 Дней -->
+        <div class="tariff-box">
+          <div class="tariff-duration">7 Дней</div>
+          <div class="tariff-price">149 <span class="currency">руб</span></div>
+          <button class="buy-btn" data-plan="7 Дней" data-price="149 руб">Купить</button>
+        </div>
+
+        <!-- 30 Дней -->
+        <div class="tariff-box featured">
+          <span class="tariff-badge">Хит</span>
+          <div class="tariff-duration">30 Дней</div>
+          <div class="tariff-price">449 <span class="currency">руб</span></div>
+          <button class="buy-btn btn-highlight" data-plan="30 Дней" data-price="449 руб">Купить</button>
+        </div>
+
+        <!-- 90 Дней -->
+        <div class="tariff-box">
+          <div class="tariff-duration">90 Дней</div>
+          <div class="tariff-price">899 <span class="currency">руб</span></div>
+          <button class="buy-btn" data-plan="90 Дней" data-price="899 руб">Купить</button>
+        </div>
+
+        <!-- Навсегда -->
+        <div class="tariff-box lifetime">
+          <span class="tariff-badge lifetime-badge">Lifetime</span>
+          <div class="tariff-duration">Навсегда</div>
+          <div class="tariff-price">1699 <span class="currency">руб</span></div>
+          <button class="buy-btn btn-lifetime" data-plan="Навсегда" data-price="1699 руб">Купить</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js?v=4"></script>
 </body>
 </html>

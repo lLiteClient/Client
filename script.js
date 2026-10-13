@@ -1,5 +1,51 @@
-// Ambient Particle Animation
+// LiteClient UI & Tariffs Modal
 document.addEventListener('DOMContentLoaded', () => {
+  // Modal Elements
+  const modal = document.getElementById('tariffsModal');
+  const openBtn = document.getElementById('openTariffsBtn');
+  const closeBtn = document.getElementById('closeTariffsBtn');
+
+  function openModal() {
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    modal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (openBtn) openBtn.addEventListener('click', openModal);
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+
+  // Close on backdrop click
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        closeModal();
+      }
+    });
+  }
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  // Buy buttons interaction
+  const buyButtons = document.querySelectorAll('.buy-btn');
+  buyButtons.forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const plan = btn.getAttribute('data-plan');
+      const price = btn.getAttribute('data-price');
+      alert(`Тариф: ${plan} (${price})\nДля покупки обратитесь к администратору LiteClient или в Telegram бота.`);
+    });
+  });
+
+  // Ambient Particle Canvas
   const canvas = document.getElementById('particleCanvas');
   if (!canvas) return;
 
