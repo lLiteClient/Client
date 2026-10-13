@@ -15,7 +15,7 @@
   <link rel="icon" type="image/png" href="logo.png">
   <link rel="shortcut icon" href="favicon.ico">
   <link rel="apple-touch-icon" href="logo.svg?v=5">
-  <link rel="stylesheet" href="styles.css?v=9">
+  <link rel="stylesheet" href="styles.css?v=10">
 </head>
 <body>
   <!-- Ambient background lighting & animated canvas -->
@@ -23,7 +23,7 @@
   <div class="ambient-glow glow-2"></div>
   <canvas id="particleCanvas"></canvas>
 
-  <!-- Top bar with Logo and Tariffs button -->
+  <!-- Top bar with Logo, Auth and Tariffs buttons -->
   <header class="top-nav">
     <div class="nav-wrapper">
       <div class="top-logo">
@@ -31,8 +31,23 @@
         <span class="nav-logo-text">Lite<span class="highlight">Client</span></span>
       </div>
       <div class="nav-actions">
-        <button class="tariffs-open-btn" id="openTariffsBtn">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+        <!-- Auth button (shown when guest) -->
+        <button class="nav-btn auth-nav-btn" id="openAuthBtn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+            <circle cx="12" cy="7" r="4"></circle>
+          </svg>
+          <span>Создать аккаунт</span>
+        </button>
+
+        <!-- User profile badge (shown when logged in) -->
+        <button class="user-profile-badge" id="userProfileBtn" style="display: none;">
+          <span class="badge-dot"></span>
+          <span class="badge-user" id="navUsername">@username</span>
+        </button>
+
+        <button class="nav-btn tariffs-open-btn" id="openTariffsBtn">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
             <rect x="2" y="5" width="20" height="14" rx="2"></rect>
             <line x1="2" y1="10" x2="22" y2="10"></line>
           </svg>
@@ -146,6 +161,125 @@
     </div>
   </div>
 
+  <!-- Telegram Verification / Auth Modal -->
+  <div class="modal-backdrop" id="authModal">
+    <div class="modal-card auth-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <img src="logo.svg?v=5" alt="LiteClient" class="modal-logo-img">
+          <h2 class="modal-title">Создание аккаунта</h2>
+        </div>
+        <button class="modal-close-btn" id="closeAuthBtn" aria-label="Закрыть">&times;</button>
+      </div>
+
+      <!-- Initial Auth Flow -->
+      <div id="authFlowBody">
+        <p class="auth-intro-text">
+          Авторизация в LiteClient происходит исключительно через <b>Telegram</b> без паролей. Ваш аккаунт навсегда привязывается к вашему Telegram.
+        </p>
+
+        <div class="auth-code-wrapper">
+          <div class="auth-code-label">Ваш код привязки:</div>
+          <div class="auth-code-box">
+            <span class="auth-code-digits" id="authCodeDigits">------</span>
+            <button class="copy-code-action-btn" id="copyAuthCodeBtn" title="Скопировать код">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+              </svg>
+              <span>Копировать</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="auth-actions-group">
+          <!-- Direct Deep Link Button (1-Click) -->
+          <a href="#" id="authTgDeepLinkBtn" target="_blank" rel="noopener noreferrer" class="auth-telegram-btn">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm4.64 6.8c-.15 1.58-.8 5.42-1.13 7.19-.14.75-.42 1-.68 1.03-.58.05-1.02-.38-1.58-.75-.88-.58-1.38-.94-2.23-1.5-.99-.65-.35-1.01.22-1.59.15-.15 2.71-2.48 2.76-2.69a.2.2 0 00-.05-.18c-.06-.05-.14-.03-.21-.02-.09.02-1.49.95-4.22 2.79-.4.27-.76.41-1.08.4-.36-.01-1.04-.2-1.55-.37-.63-.2-1.12-.31-1.08-.66.02-.18.27-.36.75-.55 2.92-1.27 4.86-2.11 5.83-2.52 2.77-1.16 3.35-1.36 3.73-1.36.08 0 .27.02.39.12.1.08.13.19.14.27-.01.06.01.24 0 .39z"/>
+            </svg>
+            <span>Привязать в Telegram (в 1 клик)</span>
+          </a>
+
+          <!-- Manual /link instruction -->
+          <div class="auth-manual-instruction">
+            <span>Или отправьте боту <a href="https://t.me/lLiteClientverifybot" target="_blank" class="bot-mention-link">@lLiteClientverifybot</a>:</span>
+            <div class="command-pill" id="commandPill">
+              <code>/link <span id="pillCodeValue">------</span></code>
+            </div>
+          </div>
+        </div>
+
+        <div class="auth-waiting-status">
+          <span class="pulse-radar"></span>
+          <span id="authStatusLabel">Ожидание отправки кода боту...</span>
+        </div>
+      </div>
+
+      <!-- Success Screen (Shown once linked) -->
+      <div id="authSuccessFlow" style="display: none;" class="auth-success-flow">
+        <div class="success-check-badge">✓</div>
+        <h3 class="success-heading">Аккаунт успешно привязан!</h3>
+        <div class="success-user-card">
+          <div class="suc-row">
+            <span class="suc-label">Пользователь:</span>
+            <span class="suc-val" id="sucUserName">@username</span>
+          </div>
+          <div class="suc-row">
+            <span class="suc-label">Telegram ID:</span>
+            <span class="suc-val" id="sucUserId">123456789</span>
+          </div>
+        </div>
+        <button class="hero-primary-btn" id="finishAuthBtn" style="width: 100%; margin-top: 16px;">
+          Перейти в профиль
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- User Profile Dashboard Modal -->
+  <div class="modal-backdrop" id="profileModal">
+    <div class="modal-card profile-modal-card">
+      <div class="modal-header">
+        <div class="modal-title-wrap">
+          <img src="logo.svg?v=5" alt="LiteClient" class="modal-logo-img">
+          <h2 class="modal-title">Личный кабинет</h2>
+        </div>
+        <button class="modal-close-btn" id="closeProfileBtn" aria-label="Закрыть">&times;</button>
+      </div>
+
+      <div class="profile-dashboard-body">
+        <div class="profile-hero-card">
+          <div class="profile-avatar-circle">👤</div>
+          <div class="profile-info-text">
+            <div class="profile-uname" id="profUname">@username</div>
+            <div class="profile-id-tag">ID: <span id="profUid">123456</span> • <span class="verified-tag">Верифицирован ✅</span></div>
+          </div>
+        </div>
+
+        <div class="profile-stats-grid">
+          <div class="stat-card">
+            <div class="stat-name">Привязанный Telegram</div>
+            <div class="stat-value" id="profTgHandle">@username</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-name">Статус подписки</div>
+            <div class="stat-value text-accent" id="profSubStatus">Не активирована</div>
+          </div>
+        </div>
+
+        <div class="profile-actions-row">
+          <button class="hero-primary-btn" id="profBuyBtn" style="flex: 1;">
+            Приобрести подписку
+          </button>
+          <button class="logout-btn" id="logoutBtn">
+            Выйти
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Legal Modal (Terms, Privacy, Refund, Contacts) -->
   <div class="modal-backdrop" id="legalModal">
     <div class="modal-card legal-modal-card">
@@ -170,6 +304,6 @@
     </div>
   </div>
 
-  <script src="script.js?v=6"></script>
+  <script src="script.js?v=7"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-// LiteClient UI, Modals & Legal Suite
+// LiteClient UI, Modals, Telegram Verification & Legal Suite
 document.addEventListener('DOMContentLoaded', () => {
   // --- Modals Elements ---
   const tariffsModal = document.getElementById('tariffsModal');
@@ -12,6 +12,231 @@ document.addEventListener('DOMContentLoaded', () => {
   const legalContentBody = document.getElementById('legalContentBody');
   const legalTabBtns = document.querySelectorAll('.legal-tab-btn');
   const footerLegalBtns = document.querySelectorAll('.footer-link-btn');
+
+  // --- Auth & Profile Elements ---
+  const openAuthBtn = document.getElementById('openAuthBtn');
+  const authModal = document.getElementById('authModal');
+  const closeAuthBtn = document.getElementById('closeAuthBtn');
+  const authFlowBody = document.getElementById('authFlowBody');
+  const authSuccessFlow = document.getElementById('authSuccessFlow');
+  const authCodeDigits = document.getElementById('authCodeDigits');
+  const copyAuthCodeBtn = document.getElementById('copyAuthCodeBtn');
+  const authTgDeepLinkBtn = document.getElementById('authTgDeepLinkBtn');
+  const pillCodeValue = document.getElementById('pillCodeValue');
+  const authStatusLabel = document.getElementById('authStatusLabel');
+  const finishAuthBtn = document.getElementById('finishAuthBtn');
+  const sucUserName = document.getElementById('sucUserName');
+  const sucUserId = document.getElementById('sucUserId');
+
+  const userProfileBtn = document.getElementById('userProfileBtn');
+  const navUsername = document.getElementById('navUsername');
+  const profileModal = document.getElementById('profileModal');
+  const closeProfileBtn = document.getElementById('closeProfileBtn');
+  const profUname = document.getElementById('profUname');
+  const profUid = document.getElementById('profUid');
+  const profTgHandle = document.getElementById('profTgHandle');
+  const logoutBtn = document.getElementById('logoutBtn');
+  const profBuyBtn = document.getElementById('profBuyBtn');
+
+  const AUTH_BOT_USERNAME = 'lLiteClientverifybot';
+  let currentAuthCode = null;
+  let authPollInterval = null;
+  let authEventSource = null;
+
+  // --- Check existing user session ---
+  function getSavedUser() {
+    try {
+      const data = localStorage.getItem('liteclient_user');
+      return data ? JSON.parse(data) : null;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  function updateNavUser(user) {
+    if (user && user.tg_id) {
+      if (openAuthBtn) openAuthBtn.style.display = 'none';
+      if (userProfileBtn) {
+        userProfileBtn.style.display = 'inline-flex';
+        const displayTag = user.username ? `@${user.username}` : (user.first_name || `ID:${user.tg_id}`);
+        navUsername.textContent = displayTag;
+      }
+    } else {
+      if (openAuthBtn) openAuthBtn.style.display = 'inline-flex';
+      if (userProfileBtn) userProfileBtn.style.display = 'none';
+    }
+  }
+
+  updateNavUser(getSavedUser());
+
+  // --- Auth Flow Logic ---
+  function generateAuthCode() {
+    return String(Math.floor(100000 + Math.random() * 900000));
+  }
+
+  function startAuthSession() {
+    currentAuthCode = generateAuthCode();
+    authCodeDigits.textContent = currentAuthCode;
+    pillCodeValue.textContent = currentAuthCode;
+
+    // Direct deep-link
+    authTgDeepLinkBtn.href = `https://t.me/${AUTH_BOT_USERNAME}?start=${currentAuthCode}`;
+
+    authFlowBody.style.display = 'block';
+    authSuccessFlow.style.display = 'none';
+    authStatusLabel.textContent = 'Ожидание привязки в боте...';
+
+    // Stop any previous listener
+    stopAuthListening();
+
+    // Listen to real-time verification via SSE on ntfy.sh
+    listenForAuth(currentAuthCode);
+
+    authModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function stopAuthListening() {
+    if (authEventSource) {
+      authEventSource.close();
+      authEventSource = null;
+    }
+    if (authPollInterval) {
+      clearInterval(authPollInterval);
+      authPollInterval = null;
+    }
+  }
+
+  function listenForAuth(code) {
+    const topic = `lc_auth_${code}`;
+    const sseUrl = `https://ntfy.sh/${topic}/sse`;
+
+    try {
+      authEventSource = new EventSource(sseUrl);
+      authEventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data && data.message) {
+            const userData = JSON.parse(data.message);
+            onAuthSuccess(userData);
+          }
+        } catch (err) {}
+      };
+
+      authEventSource.onerror = () => {
+        // Fallback to HTTP polling if SSE has any connection issue
+        startPollFallback(topic);
+      };
+    } catch (e) {
+      startPollFallback(topic);
+    }
+  }
+
+  function startPollFallback(topic) {
+    if (authPollInterval) return;
+    authPollInterval = setInterval(async () => {
+      try {
+        const res = await fetch(`https://ntfy.sh/${topic}/raw?poll=1`);
+        const text = await res.text();
+        if (text && text.trim().length > 0) {
+          const lines = text.trim().split('\n');
+          for (const line of lines) {
+            try {
+              const userData = JSON.parse(line);
+              if (userData && userData.tg_id) {
+                onAuthSuccess(userData);
+                return;
+              }
+            } catch (err) {}
+          }
+        }
+      } catch (e) {}
+    }, 2500);
+  }
+
+  function onAuthSuccess(userData) {
+    stopAuthListening();
+
+    // Persist session
+    localStorage.setItem('liteclient_user', JSON.stringify(userData));
+    updateNavUser(userData);
+
+    // Show success view
+    const displayTag = userData.username ? `@${userData.username}` : (userData.first_name || `ID:${userData.tg_id}`);
+    sucUserName.textContent = displayTag;
+    sucUserId.textContent = userData.tg_id;
+
+    authFlowBody.style.display = 'none';
+    authSuccessFlow.style.display = 'block';
+  }
+
+  function closeAuthModal() {
+    stopAuthListening();
+    authModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (openAuthBtn) openAuthBtn.addEventListener('click', startAuthSession);
+  if (closeAuthBtn) closeAuthBtn.addEventListener('click', closeAuthModal);
+  if (finishAuthBtn) {
+    finishAuthBtn.addEventListener('click', () => {
+      closeAuthModal();
+      openProfileModal();
+    });
+  }
+
+  // Copy auth code button
+  if (copyAuthCodeBtn) {
+    copyAuthCodeBtn.addEventListener('click', () => {
+      if (!currentAuthCode) return;
+      navigator.clipboard.writeText(currentAuthCode).then(() => {
+        const btnText = copyAuthCodeBtn.querySelector('span');
+        const oldText = btnText.textContent;
+        btnText.textContent = 'Скопировано!';
+        setTimeout(() => { btnText.textContent = oldText; }, 1800);
+      });
+    });
+  }
+
+  // --- Profile Dashboard Modal ---
+  function openProfileModal() {
+    const user = getSavedUser();
+    if (!user) {
+      startAuthSession();
+      return;
+    }
+
+    const displayTag = user.username ? `@${user.username}` : (user.first_name || `Пользователь`);
+    profUname.textContent = displayTag;
+    profUid.textContent = user.tg_id;
+    profTgHandle.textContent = user.username ? `@${user.username}` : `ID: ${user.tg_id}`;
+
+    profileModal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProfileModal() {
+    profileModal.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  if (userProfileBtn) userProfileBtn.addEventListener('click', openProfileModal);
+  if (closeProfileBtn) closeProfileBtn.addEventListener('click', closeProfileModal);
+
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', () => {
+      localStorage.removeItem('liteclient_user');
+      updateNavUser(null);
+      closeProfileModal();
+    });
+  }
+
+  if (profBuyBtn) {
+    profBuyBtn.addEventListener('click', () => {
+      closeProfileModal();
+      openTariffs();
+    });
+  }
 
   // --- Legal Documents Content ---
   const legalDocs = {
@@ -63,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         </p>
         <ul style="padding-left: 20px; margin-bottom: 12px;">
           <li>Анонимный аппаратный хэш устройства (HWID) для проверки лицензии;</li>
-          <li>Адрес электронной почты (Email), указываемый при совершении оплаты для доставки электронного чека и лицензионного ключа;</li>
+          <li>Идентификатор Telegram (ID и username) для привязки личного кабинета;</li>
           <li>Идентификатор платежа в платежном шлюзе.</li>
         </ul>
 
@@ -95,7 +320,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </p>
         <ul style="padding-left: 20px; margin-bottom: 12px;">
           <li>Отображением ключа на финальной странице успешной оплаты;</li>
-          <li>Отправкой письма с лицензионным ключом и инструкцией на указанный при оплате Email;</li>
           <li>Либо мгновенной выдачей через Telegram-бота поддержки при прямой оплате.</li>
         </ul>
 
@@ -150,7 +374,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // --- Modal Helpers ---
+  // --- Tariffs & Legal Modal Helpers ---
   function openTariffs() {
     tariffsModal.classList.add('active');
     document.body.style.overflow = 'hidden';
@@ -211,6 +435,8 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('click', (e) => {
     if (e.target === tariffsModal) closeTariffs();
     if (e.target === legalModal) closeLegal();
+    if (e.target === authModal) closeAuthModal();
+    if (e.target === profileModal) closeProfileModal();
   });
 
   // Close on Escape
@@ -218,6 +444,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (e.key === 'Escape') {
       if (tariffsModal.classList.contains('active')) closeTariffs();
       if (legalModal.classList.contains('active')) closeLegal();
+      if (authModal.classList.contains('active')) closeAuthModal();
+      if (profileModal.classList.contains('active')) closeProfileModal();
     }
   });
 
@@ -227,7 +455,6 @@ document.addEventListener('DOMContentLoaded', () => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
       const plan = btn.getAttribute('data-plan');
-      const price = btn.getAttribute('data-price');
       window.open(`https://t.me/lLiteClientBot?start=buy_${encodeURIComponent(plan)}`, '_blank');
     });
   });
