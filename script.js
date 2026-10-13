@@ -211,6 +211,29 @@ document.addEventListener('DOMContentLoaded', () => {
     profUid.textContent = user.tg_id;
     profTgHandle.textContent = user.username ? `@${user.username}` : `ID: ${user.tg_id}`;
 
+    const profSubStatus = document.getElementById('profSubStatus');
+    if (profSubStatus) {
+      if (user.role === 'ADMIN' || user.isLifetime || user.expires_at === 'LIFETIME') {
+        profSubStatus.textContent = "Навсегда (Lifetime) 👑";
+        profSubStatus.className = "stat-value text-accent";
+      } else if (user.expires_at) {
+        const exp = new Date(user.expires_at).getTime();
+        const diff = exp - Date.now();
+        if (diff > 0) {
+          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          profSubStatus.textContent = days > 0 ? `Активна: ${days} дн. ${hours} ч.` : `Активна: ${hours} ч.`;
+          profSubStatus.className = "stat-value text-accent";
+        } else {
+          profSubStatus.textContent = "Истекла";
+          profSubStatus.className = "stat-value text-muted";
+        }
+      } else {
+        profSubStatus.textContent = "Не активирована";
+        profSubStatus.className = "stat-value text-muted";
+      }
+    }
+
     profileModal.classList.add('active');
     document.body.style.overflow = 'hidden';
   }
@@ -475,13 +498,27 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Buy buttons -> Redirect to Support Telegram Bot
+  // Buy buttons -> Require Telegram auth & Block duplicate lifetime purchases
   const buyButtons = document.querySelectorAll('.buy-btn');
   buyButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
       e.stopPropagation();
+      const user = getSavedUser();
+      if (!user || !user.tg_id) {
+        alert('⚠️ Для покупки тарифа необходимо сначала привязать Telegram-аккаунт!');
+        closeTariffs();
+        startAuthSession();
+        return;
+      }
+
+      if (user.role === 'ADMIN' || user.isLifetime || user.expires_at === 'LIFETIME') {
+        alert('🎉 У вас уже активирована вечная подписка (Lifetime)! Покупка дополнительных тарифов не требуется.');
+        return;
+      }
+
       const plan = btn.getAttribute('data-plan');
-      window.open(`https://t.me/lLiteClientBot?start=buy_${encodeURIComponent(plan)}`, '_blank');
+      const userRef = user.username ? `@${user.username}` : `id_${user.tg_id}`;
+      window.open(`https://t.me/lLiteClientBot?start=buy_${encodeURIComponent(plan)}_${encodeURIComponent(userRef)}`, '_blank');
     });
   });
 
