@@ -132,19 +132,7 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
             </div>
             <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">
-              Круглосуточный бот обратной связи и консультаций оператора.
-            </p>
-          </div>
-
-          <div class="contact-card">
-            <div class="contact-card-label">Электронная почта</div>
-            <div class="contact-card-val">
-              <a href="mailto:support@lliteclient.github.io" class="contact-card-link">
-                support@lliteclient.github.io
-              </a>
-            </div>
-            <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">
-              Ответ на обращения в течение 12-24 часов.
+              Круглосуточный бот обратной связи и прямой связи с оператором.
             </p>
           </div>
 
@@ -154,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
               24 / 7 (Без выходных)
             </div>
             <p style="font-size: 0.8rem; color: #94a3b8; margin-top: 6px;">
-              Автоматическая выдача ключей работает моментально.
+              Автоматическая выдача ключей и поддержка в реальном времени.
             </p>
           </div>
         </div>
