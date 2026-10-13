@@ -1276,3 +1276,122 @@ html, body {
   border-radius: 4px;
   color: #38bdf8;
 }
+
+/* --- Live Subscription Status & Time Displays --- */
+.badge-sub-pill {
+  font-size: 0.76rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 8px;
+  background: rgba(56, 189, 248, 0.15);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  color: #7dd3fc;
+  letter-spacing: 0.02em;
+  transition: all 0.25s ease;
+}
+
+.badge-sub-pill.pill-active {
+  background: rgba(16, 185, 129, 0.18);
+  border-color: rgba(16, 185, 129, 0.45);
+  color: #34d399;
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.25);
+}
+
+.badge-sub-pill.pill-admin {
+  background: rgba(245, 158, 11, 0.2);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+  box-shadow: 0 0 12px rgba(245, 158, 11, 0.3);
+}
+
+.badge-sub-pill.pill-inactive {
+  background: rgba(239, 68, 68, 0.12);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #f87171;
+}
+
+/* User Hero Sub Banner */
+.user-sub-banner {
+  display: inline-flex;
+  align-items: center;
+  gap: 14px;
+  background: rgba(15, 23, 42, 0.75);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 999px;
+  padding: 8px 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4),
+              0 0 20px rgba(56, 189, 248, 0.15);
+  animation: bannerFadeIn 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes bannerFadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sub-banner-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.sub-banner-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 10px #10b981;
+}
+
+.sub-banner-dot.dot-inactive {
+  background: #ef4444;
+  box-shadow: 0 0 8px #ef4444;
+}
+
+.sub-banner-dot.dot-admin {
+  background: #f59e0b;
+  box-shadow: 0 0 12px #f59e0b;
+}
+
+.sub-banner-time {
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: #94a3b8;
+  border-left: 1px solid rgba(255, 255, 255, 0.15);
+  padding-left: 14px;
+}
+
+.time-counter {
+  color: #38bdf8;
+  font-weight: 700;
+}
+
+.stat-card-time {
+  background: rgba(15, 23, 42, 0.85) !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+.text-time {
+  color: #38bdf8;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.profile-expiry-hint {
+  font-size: 0.82rem;
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  text-align: center;
+  padding: 8px 12px;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px dashed rgba(56, 189, 248, 0.2);
+}

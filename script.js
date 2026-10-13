@@ -43,6 +43,22 @@ document.addEventListener('DOMContentLoaded', () => {
   let authPollInterval = null;
   let authEventSource = null;
 
+  // DOM elements for live status
+  const navBadgeDot = document.getElementById('navBadgeDot');
+  const navSubPill = document.getElementById('navSubPill');
+  const userSubBanner = document.getElementById('userSubBanner');
+  const subBannerDot = document.getElementById('subBannerDot');
+  const subBannerTitle = document.getElementById('subBannerTitle');
+  const subBannerCountdown = document.getElementById('subBannerCountdown');
+  const profRoleBadge = document.getElementById('profRoleBadge');
+  const profTimeRemaining = document.getElementById('profTimeRemaining');
+  const profExpiryHint = document.getElementById('profExpiryHint');
+  const profExpiryDate = document.getElementById('profExpiryDate');
+
+  let liveStatusEventSource = null;
+  let liveStatusPollInterval = null;
+  let countdownTimer = null;
+
   // --- Check existing user session ---
   function getSavedUser() {
     try {
@@ -53,6 +69,199 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  function renderSubscriptionStatus(user) {
+    if (!user || !user.tg_id) {
+      if (userSubBanner) userSubBanner.style.display = 'none';
+      if (navSubPill) navSubPill.style.display = 'none';
+      return;
+    }
+
+    const isAdmin = (user.role === 'ADMIN');
+    const isLifetime = (user.isLifetime || user.expires_at === 'LIFETIME');
+    const isBanned = !!user.banned;
+
+    let statusText = "Не активирована";
+    let pillText = "Не активна";
+    let pillClass = "pill-inactive";
+    let dotClass = "dot-inactive";
+    let formattedCountdown = "—";
+    let expiryStr = "—";
+    let isSubActive = false;
+
+    if (isBanned) {
+      statusText = "⛔ Заблокирован";
+      pillText = "Бан";
+      pillClass = "pill-inactive";
+      dotClass = "dot-inactive";
+      formattedCountdown = "Доступ заблокирован";
+      expiryStr = "Блокировка администратором";
+    } else if (isAdmin) {
+      statusText = "👑 [ADMIN] Вечный доступ";
+      pillText = "👑 ADMIN";
+      pillClass = "pill-admin";
+      dotClass = "dot-admin";
+      formattedCountdown = "Бессрочно (Навсегда)";
+      expiryStr = "Бессрочно";
+      isSubActive = true;
+    } else if (isLifetime) {
+      statusText = "⚡ Навсегда (Lifetime)";
+      pillText = "⚡ Lifetime";
+      pillClass = "pill-active";
+      dotClass = "";
+      formattedCountdown = "Бессрочно (Навсегда)";
+      expiryStr = "Бессрочно";
+      isSubActive = true;
+    } else if (user.expires_at) {
+      const expTime = new Date(user.expires_at).getTime();
+      const now = Date.now();
+      const diff = expTime - now;
+
+      if (diff > 0) {
+        isSubActive = true;
+        dotClass = "";
+        const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const mins = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((diff % (1000 * 60)) / 1000);
+
+        statusText = `Активна: ${days > 0 ? `${days} дн. ${hours} ч.` : `${hours} ч. ${mins} мин.`}`;
+        pillText = `⏳ ${days > 0 ? `${days}д ${hours}ч` : `${hours}ч ${mins}м`}`;
+        pillClass = "pill-active";
+
+        const parts = [];
+        if (days > 0) parts.push(`${days} дн.`);
+        if (hours > 0 || days > 0) parts.push(`${hours} ч.`);
+        parts.push(`${mins} мин.`);
+        parts.push(`${secs} сек.`);
+        formattedCountdown = parts.join(' ');
+
+        const expDate = new Date(user.expires_at);
+        expiryStr = expDate.toLocaleString('ru-RU', {
+          day: '2-digit', month: 'long', year: 'numeric',
+          hour: '2-digit', minute: '2-digit'
+        });
+      } else {
+        statusText = "Подписка истекла";
+        pillText = "Истекла";
+        pillClass = "pill-inactive";
+        dotClass = "dot-inactive";
+        formattedCountdown = "Срок действия истёк";
+        expiryStr = "Истекла: " + new Date(user.expires_at).toLocaleDateString('ru-RU');
+      }
+    }
+
+    // 1. Top Nav Pill
+    if (navSubPill) {
+      navSubPill.textContent = pillText;
+      navSubPill.className = `badge-sub-pill ${pillClass}`;
+      navSubPill.style.display = 'inline-block';
+    }
+    if (navBadgeDot) {
+      navBadgeDot.className = `badge-dot ${dotClass}`;
+    }
+
+    // 2. Hero Center Banner
+    if (userSubBanner) {
+      userSubBanner.style.display = 'inline-flex';
+      if (subBannerDot) subBannerDot.className = `sub-banner-dot ${dotClass}`;
+      if (subBannerTitle) subBannerTitle.textContent = statusText;
+      if (subBannerCountdown) subBannerCountdown.textContent = formattedCountdown;
+    }
+
+    // 3. Profile Modal Elements
+    const profSubStatus = document.getElementById('profSubStatus');
+    if (profSubStatus) {
+      profSubStatus.textContent = statusText;
+      profSubStatus.className = isSubActive ? "stat-value text-accent" : "stat-value text-muted";
+    }
+    if (profRoleBadge) {
+      profRoleBadge.textContent = isAdmin ? "👑 [ADMIN]" : "USER";
+      profRoleBadge.style.color = isAdmin ? "#fbbf24" : "#f8fafc";
+    }
+    if (profTimeRemaining) {
+      profTimeRemaining.textContent = formattedCountdown;
+      profTimeRemaining.className = isSubActive ? "stat-value text-time font-mono" : "stat-value text-muted font-mono";
+    }
+    if (profExpiryHint && profExpiryDate) {
+      if (user.expires_at || isLifetime || isAdmin) {
+        profExpiryHint.style.display = 'block';
+        profExpiryDate.textContent = expiryStr;
+      } else {
+        profExpiryHint.style.display = 'none';
+      }
+    }
+  }
+
+  function startLiveStatusSync(tgId) {
+    if (!tgId) return;
+    if (liveStatusEventSource) {
+      liveStatusEventSource.close();
+      liveStatusEventSource = null;
+    }
+    if (liveStatusPollInterval) {
+      clearInterval(liveStatusPollInterval);
+      liveStatusPollInterval = null;
+    }
+
+    // Initial instant fetch from ntfy topic cache
+    const topic = `lc_user_${tgId}`;
+    fetch(`https://ntfy.sh/${topic}/raw?poll=1`)
+      .then(r => r.text())
+      .then(text => {
+        if (text && text.trim().length > 0) {
+          const lines = text.trim().split('\n');
+          const lastLine = lines[lines.length - 1];
+          try {
+            const data = JSON.parse(lastLine);
+            if (data && data.tg_id) {
+              const cur = getSavedUser() || {};
+              const merged = { ...cur, ...data };
+              localStorage.setItem('liteclient_user', JSON.stringify(merged));
+              renderSubscriptionStatus(merged);
+            }
+          } catch (e) {}
+        }
+      })
+      .catch(() => {});
+
+    // SSE Real-time stream
+    try {
+      liveStatusEventSource = new EventSource(`https://ntfy.sh/${topic}/sse`);
+      liveStatusEventSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          if (data && data.message) {
+            const subData = JSON.parse(data.message);
+            const cur = getSavedUser() || {};
+            const merged = { ...cur, ...subData };
+            localStorage.setItem('liteclient_user', JSON.stringify(merged));
+            renderSubscriptionStatus(merged);
+          }
+        } catch (e) {}
+      };
+      liveStatusEventSource.onerror = () => {
+        if (!liveStatusPollInterval) {
+          liveStatusPollInterval = setInterval(() => {
+            fetch(`https://ntfy.sh/${topic}/raw?poll=1`)
+              .then(r => r.text())
+              .then(txt => {
+                if (txt && txt.trim().length > 0) {
+                  const arr = txt.trim().split('\n');
+                  const d = JSON.parse(arr[arr.length - 1]);
+                  if (d && d.tg_id) {
+                    const c = getSavedUser() || {};
+                    const m = { ...c, ...d };
+                    localStorage.setItem('liteclient_user', JSON.stringify(m));
+                    renderSubscriptionStatus(m);
+                  }
+                }
+              }).catch(() => {});
+          }, 8000);
+        }
+      };
+    } catch (e) {}
+  }
+
   function updateNavUser(user) {
     if (user && user.tg_id) {
       if (openAuthBtn) openAuthBtn.style.display = 'none';
@@ -61,10 +270,31 @@ document.addEventListener('DOMContentLoaded', () => {
         const displayTag = user.username ? `@${user.username}` : (user.first_name || `ID:${user.tg_id}`);
         navUsername.textContent = displayTag;
       }
+      renderSubscriptionStatus(user);
+      startLiveStatusSync(user.tg_id);
     } else {
       if (openAuthBtn) openAuthBtn.style.display = 'inline-flex';
       if (userProfileBtn) userProfileBtn.style.display = 'none';
+      if (userSubBanner) userSubBanner.style.display = 'none';
+      if (liveStatusEventSource) {
+        liveStatusEventSource.close();
+        liveStatusEventSource = null;
+      }
+      if (liveStatusPollInterval) {
+        clearInterval(liveStatusPollInterval);
+        liveStatusPollInterval = null;
+      }
     }
+  }
+
+  // Live 1-second countdown ticker
+  if (!countdownTimer) {
+    countdownTimer = setInterval(() => {
+      const u = getSavedUser();
+      if (u) {
+        renderSubscriptionStatus(u);
+      }
+    }, 1000);
   }
 
   updateNavUser(getSavedUser());
@@ -211,28 +441,7 @@ document.addEventListener('DOMContentLoaded', () => {
     profUid.textContent = user.tg_id;
     profTgHandle.textContent = user.username ? `@${user.username}` : `ID: ${user.tg_id}`;
 
-    const profSubStatus = document.getElementById('profSubStatus');
-    if (profSubStatus) {
-      if (user.role === 'ADMIN' || user.isLifetime || user.expires_at === 'LIFETIME') {
-        profSubStatus.textContent = "Навсегда (Lifetime) 👑";
-        profSubStatus.className = "stat-value text-accent";
-      } else if (user.expires_at) {
-        const exp = new Date(user.expires_at).getTime();
-        const diff = exp - Date.now();
-        if (diff > 0) {
-          const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-          const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-          profSubStatus.textContent = days > 0 ? `Активна: ${days} дн. ${hours} ч.` : `Активна: ${hours} ч.`;
-          profSubStatus.className = "stat-value text-accent";
-        } else {
-          profSubStatus.textContent = "Истекла";
-          profSubStatus.className = "stat-value text-muted";
-        }
-      } else {
-        profSubStatus.textContent = "Не активирована";
-        profSubStatus.className = "stat-value text-muted";
-      }
-    }
+    renderSubscriptionStatus(user);
 
     profileModal.classList.add('active');
     document.body.style.overflow = 'hidden';

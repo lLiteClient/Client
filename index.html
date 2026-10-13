@@ -43,8 +43,9 @@
 
         <!-- User profile badge (shown when logged in) -->
         <button class="user-profile-badge" id="userProfileBtn" style="display: none;">
-          <span class="badge-dot"></span>
+          <span class="badge-dot" id="navBadgeDot"></span>
           <span class="badge-user" id="navUsername">@username</span>
+          <span class="badge-sub-pill" id="navSubPill">Не активирована</span>
         </button>
 
         <button class="nav-btn faq-nav-btn" id="openFaqBtn">
@@ -73,6 +74,17 @@
       <div class="version-tag">
         <span class="pulse-dot"></span>
         MINECRAFT 1.21.4 • FABRIC
+      </div>
+
+      <!-- User Subscription Live Status Banner -->
+      <div class="user-sub-banner" id="userSubBanner" style="display: none;">
+        <div class="sub-banner-badge" id="subBannerBadge">
+          <span class="sub-banner-dot" id="subBannerDot"></span>
+          <span class="sub-banner-title" id="subBannerTitle">Подписка активна</span>
+        </div>
+        <div class="sub-banner-time" id="subBannerTime">
+          Осталось: <span class="time-counter" id="subBannerCountdown">—</span>
+        </div>
       </div>
 
       <div class="logo-emblem-wrap">
@@ -299,9 +311,21 @@
             <div class="stat-value" id="profTgHandle">@username</div>
           </div>
           <div class="stat-card">
+            <div class="stat-name">Роль в клиенте</div>
+            <div class="stat-value" id="profRoleBadge">USER</div>
+          </div>
+          <div class="stat-card">
             <div class="stat-name">Статус подписки</div>
             <div class="stat-value text-accent" id="profSubStatus">Не активирована</div>
           </div>
+          <div class="stat-card stat-card-time" id="profTimeCard">
+            <div class="stat-name">Оставшееся время</div>
+            <div class="stat-value font-mono" id="profTimeRemaining">—</div>
+          </div>
+        </div>
+
+        <div class="profile-expiry-hint" id="profExpiryHint" style="display: none;">
+          📅 Действует до: <span id="profExpiryDate">—</span>
         </div>
 
         <div class="profile-actions-row">
