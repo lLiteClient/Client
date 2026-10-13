@@ -110,13 +110,15 @@ html, body {
 }
 
 .logo-emblem-wrap {
-  margin-bottom: 16px;
-  display: inline-block;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .brand-logo-img {
-  width: 58px;
-  height: 58px;
+  width: 52px;
+  height: 52px;
   filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.6));
   animation: logoPulse 4s ease-in-out infinite alternate;
 }
@@ -177,6 +179,10 @@ html, body {
 }
 
 .center-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   text-align: center;
   animation: cardFadeIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
