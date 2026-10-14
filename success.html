@@ -252,6 +252,8 @@
         }
       } catch (e) {}
 
+      const isTest = (params.get('test') === '1') || (cachedOrder && cachedOrder.isTest) || (payId && payId.startsWith('TEST_'));
+
       if (cachedOrder) {
         if (!payId && cachedOrder.payId) payId = cachedOrder.payId;
         if (!amount && cachedOrder.amount) amount = cachedOrder.amount;
@@ -259,13 +261,27 @@
       }
 
       // 3. Render UI values
+      if (isTest) {
+        const badge = document.getElementById('subStatusBadge');
+        if (badge) {
+          badge.textContent = '⚡ Тестовая активация (Обход оплаты)';
+          badge.style.borderColor = '#fbbf24';
+          badge.style.color = '#fbbf24';
+          badge.style.background = 'rgba(245, 158, 11, 0.15)';
+        }
+        const desc = document.getElementById('statusMessage');
+        if (desc) {
+          desc.textContent = 'Тестовая покупка успешно проведена в обход платёжного шлюза! Подписка активирована на сервере.';
+        }
+      }
+
       if (payId) {
         document.getElementById('payIdRow').style.display = 'flex';
-        document.getElementById('payIdVal').textContent = '#' + payId;
+        document.getElementById('payIdVal').textContent = (payId.startsWith('#') ? '' : '#') + payId;
       }
       if (amount) {
         document.getElementById('amountRow').style.display = 'flex';
-        document.getElementById('amountVal').textContent = amount + ' ' + (currency === 'RUB' ? 'руб' : currency);
+        document.getElementById('amountVal').textContent = (isTest ? '0 руб (Тест)' : (amount + ' ' + (currency === 'RUB' ? 'руб' : currency)));
       }
       if (cachedOrder && cachedOrder.plan) {
         document.getElementById('planRow').style.display = 'flex';

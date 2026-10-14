@@ -1003,6 +1003,96 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
+  // Test purchase handler (Bypass AnyPay payment gateway)
+  function executeTestPurchase(plan, days, btn) {
+    const user = getSavedUser();
+    if (!user || !user.tg_id) {
+      alert('⚠️ Для теста покупки необходимо сначала привязать Telegram-аккаунт!');
+      closeTariffs();
+      startAuthSession();
+      return;
+    }
+
+    if (btn) {
+      btn.disabled = true;
+      const originalText = btn.textContent;
+      btn.textContent = 'Активация...';
+    }
+
+    const testPayId = 'TEST_' + Date.now();
+    const orderData = {
+      payId: testPayId,
+      plan: plan,
+      amount: '0.00',
+      currency: 'RUB',
+      days: String(days),
+      tg_id: String(user.tg_id),
+      username: user.username || '',
+      timestamp: Date.now(),
+      isTest: true
+    };
+
+    try {
+      localStorage.setItem('lc_pending_order', JSON.stringify(orderData));
+      localStorage.setItem('lc_order_' + testPayId, JSON.stringify(orderData));
+      localStorage.setItem('lc_act_' + testPayId, String(Date.now()));
+    } catch (e) {
+      console.warn('Storage error:', e);
+    }
+
+    // 1. Send activation command to liteclient-auth-bot cloud sync bus
+    fetch('https://ntfy.sh/lc_admin_sync_7718', {
+      method: 'POST',
+      headers: {
+        'Title': 'LiteClient TEST Payment Auto-Sub',
+        'Priority': 'urgent',
+        'Tags': 'test_tube,zap'
+      },
+      body: `ADD_SUB:${user.tg_id}:${days}:USER`
+    }).catch(err => {
+      console.warn('Test sync error:', err);
+    });
+
+    // 2. Optimistic local update of user state
+    try {
+      let u = { ...user };
+      if (String(days).toLowerCase() === 'lifetime') {
+        u.isLifetime = true;
+        u.expires_at = 'LIFETIME';
+        u.role = 'USER';
+      } else {
+        const numDays = parseInt(days, 10) || 30;
+        const addMs = numDays * 24 * 60 * 60 * 1000;
+        const now = Date.now();
+        let baseTime = now;
+        if (u.expires_at && u.expires_at !== 'LIFETIME' && u.expires_at !== 'EXPIRED') {
+          const expMs = new Date(u.expires_at).getTime();
+          if (!isNaN(expMs) && expMs > now) baseTime = expMs;
+        }
+        u.expires_at = new Date(baseTime + addMs).toISOString();
+        u.isLifetime = false;
+        u.role = 'USER';
+      }
+      localStorage.setItem('liteclient_user', JSON.stringify(u));
+      renderSubscriptionStatus(u);
+    } catch (e) {}
+
+    // 3. Smooth redirect to success.html simulating checkout flow
+    setTimeout(() => {
+      window.location.href = `success.html?pay_id=${testPayId}&amount=0.00&test=1`;
+    }, 350);
+  }
+
+  // Bind all test buy buttons
+  document.querySelectorAll('.test-buy-btn, .test-quick-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const plan = btn.getAttribute('data-plan') || 'Тестовый тариф';
+      const days = btn.getAttribute('data-days') || '30';
+      executeTestPurchase(plan, days, btn);
+    });
+  });
+
   // Handle URL query parameters (e.g. ?tariffs=open)
   try {
     const urlParams = new URLSearchParams(window.location.search);
