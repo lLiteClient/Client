@@ -915,11 +915,7 @@ document.addEventListener('DOMContentLoaded', () => {
       amount: amount,
       currency: currency,
       desc: desc,
-      sign: sign,
-      success_url: ANYPAY_CONFIG.successUrl,
-      fail_url: ANYPAY_CONFIG.failUrl,
-      user_id: user ? String(user.tg_id) : '',
-      plan: plan
+      sign: sign
     };
 
     for (const [name, value] of Object.entries(fields)) {
