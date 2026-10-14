@@ -892,11 +892,46 @@ document.addEventListener('DOMContentLoaded', () => {
     const secretKey = ANYPAY_CONFIG.secretKey;
     const currency = ANYPAY_CONFIG.currency;
 
+    // Determine duration / days based on plan or amount
+    let days = '30';
+    const planLower = String(plan).toLowerCase();
+    const amtNum = Math.round(Number(amountRaw));
+    if (planLower.includes('1 ') || amtNum === 39) {
+      days = '1';
+    } else if (planLower.includes('7 ') || amtNum === 129) {
+      days = '7';
+    } else if (planLower.includes('30') || amtNum === 300) {
+      days = '30';
+    } else if (planLower.includes('90') || amtNum === 890) {
+      days = '90';
+    } else if (planLower.includes('навсегда') || planLower.includes('life') || amtNum === 1290) {
+      days = 'lifetime';
+    }
+
     // pay_id: Unique numeric order ID up to 15 digits (0-9)
     const payId = String(Date.now());
     const amount = Number(amountRaw).toFixed(2);
     const userRef = user && user.username ? `@${user.username}` : (user ? `id_${user.tg_id}` : 'Guest');
     const desc = `LiteClient - ${plan} (${userRef})`;
+
+    // Save order data for automated subscription activation upon return
+    const orderData = {
+      payId: payId,
+      plan: plan,
+      amount: amount,
+      currency: currency,
+      days: days,
+      tg_id: user ? String(user.tg_id) : null,
+      username: user ? (user.username || '') : '',
+      timestamp: Date.now()
+    };
+
+    try {
+      localStorage.setItem('lc_pending_order', JSON.stringify(orderData));
+      localStorage.setItem('lc_order_' + payId, JSON.stringify(orderData));
+    } catch (e) {
+      console.warn('Unable to cache pending order in localStorage:', e);
+    }
 
     // AnyPay MD5 signature calculation:
     // currency:amount:secret_key:merchant_id:pay_id
