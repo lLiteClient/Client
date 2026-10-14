@@ -1,7 +1,7 @@
 {
-  "version": "0.1.0",
-  "name": "LiteClient Release 0.1.0",
+  "version": "0.1.1",
+  "name": "LiteClient Release 0.1.1",
   "download_url": "https://lliteclient.github.io/LiteClient.exe",
-  "changelog": "100% Critical Hits fix + Telegram Auth + Server Presets (FunTime, HolyWorld, ReallyWorld)",
+  "changelog": "Real-time Cloud Subscription Sync + Expired Subscription Warning Banner & Plate",
   "min_version": "0.1.0"
 }
