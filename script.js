@@ -710,7 +710,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- AnyPay Payment Configuration & Integration ---
   const ANYPAY_CONFIG = {
     merchantId: '18534',
-    secretKey: '07HljyC3JXQTyrfZZcOjCGtFmwtJJVRHK3E1suu',
+    secretKey: '9IwHqAOV0Tcf810vYgbohf5eMebPpkH9tgYFliy',
     currency: 'RUB',
     successUrl: 'https://lliteclient.github.io/success',
     failUrl: 'https://lliteclient.github.io/fail'
